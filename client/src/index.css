@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-white font-sans text-neutral-900 antialiased transition-colors duration-300 dark:bg-neutral-950 dark:text-neutral-100;
+  }
+  ::selection {
+    @apply bg-accent/20 text-inherit;
+  }
+}
+
+@layer components {
+  .container-site {
+    @apply mx-auto w-full max-w-6xl px-5 sm:px-8;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90 active:scale-[0.98] dark:bg-accent-dark;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-neutral-300 bg-transparent px-6 py-3 text-sm font-semibold text-neutral-900 transition hover:bg-neutral-100 active:scale-[0.98] dark:border-neutral-700 dark:text-neutral-100 dark:hover:bg-neutral-800;
+  }
+  .card {
+    @apply rounded-3xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900;
+  }
+  .input {
+    @apply w-full rounded-xl border border-neutral-300 bg-white px-4 py-2.5 text-sm text-neutral-900 outline-none transition placeholder:text-neutral-400 focus:border-accent focus:ring-2 focus:ring-accent/30 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-100;
+  }
+  .label {
+    @apply mb-1.5 block text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full bg-neutral-100 px-3 py-1 text-xs font-semibold text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300;
+  }
+}
