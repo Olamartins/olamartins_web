@@ -3,12 +3,21 @@ import { CheckCircle2 } from 'lucide-react';
 import { api } from '../../api/client.js';
 import Spinner from '../../components/Spinner.jsx';
 
-// Edits the public site content: hero, about, mission/vision, contact, socials.
-// services/stats stay as JSON (editable here too, carefully).
+// Edits the public site content: brand, hero, about, contact/socials, plus
+// the structured arrays (services, stats, highlights, experience,
+// certifications, tools) as validated JSON.
+const JSON_FIELDS = [
+  { key: 'services', label: 'Services', hint: '[{"icon","title","description"}] — icon names: BarChart3, LineChart, Database, PenTool, Rocket, Target, Cpu, Zap' },
+  { key: 'stats', label: 'Stats', hint: '[{"value","label"}]' },
+  { key: 'highlights', label: 'Highlights (home)', hint: '[{"metric","title","description","tag"}]' },
+  { key: 'experience', label: 'Experience (about)', hint: '[{"role","company","period","points":["…"]}]' },
+  { key: 'certifications', label: 'Certifications', hint: '["…"]' },
+  { key: 'tools', label: 'Tools / skills chips', hint: '["Power BI", "DAX", …]' },
+];
+
 export default function AdminSettings() {
   const [form, setForm] = useState(null);
-  const [servicesJson, setServicesJson] = useState('');
-  const [statsJson, setStatsJson] = useState('');
+  const [json, setJson] = useState({});
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState({ type: null, message: '' });
 
@@ -39,8 +48,9 @@ export default function AdminSettings() {
         twitter: s.socials?.twitter || '',
         medium: s.socials?.medium || '',
       });
-      setServicesJson(JSON.stringify(s.services || [], null, 2));
-      setStatsJson(JSON.stringify(s.stats || [], null, 2));
+      const next = {};
+      for (const f of JSON_FIELDS) next[f.key] = JSON.stringify(s[f.key] || [], null, 2);
+      setJson(next);
     }).catch((err) => setStatus({ type: 'error', message: err.message }));
   }, []);
 
@@ -51,16 +61,16 @@ export default function AdminSettings() {
     e.preventDefault();
     setSaving(true);
     setStatus({ type: null, message: '' });
-    let services;
-    let stats;
-    try {
-      services = JSON.parse(servicesJson || '[]');
-      stats = JSON.parse(statsJson || '[]');
-      if (!Array.isArray(services) || !Array.isArray(stats)) throw new Error('Services and stats must be JSON arrays');
-    } catch {
-      setStatus({ type: 'error', message: 'Services / stats must be valid JSON arrays.' });
-      setSaving(false);
-      return;
+    const parsed = {};
+    for (const f of JSON_FIELDS) {
+      try {
+        parsed[f.key] = JSON.parse(json[f.key] || '[]');
+        if (!Array.isArray(parsed[f.key])) throw new Error('not an array');
+      } catch {
+        setStatus({ type: 'error', message: `${f.label} must be a valid JSON array.` });
+        setSaving(false);
+        return;
+      }
     }
     const payload = {
       siteName: form.siteName,
@@ -72,8 +82,7 @@ export default function AdminSettings() {
         primaryCta: { label: form.hero.primaryLabel, href: form.hero.primaryHref || '/contact' },
         secondaryCta: { label: form.hero.secondaryLabel, href: form.hero.secondaryHref || '/shop' },
       },
-      stats,
-      services,
+      ...parsed,
       about: {
         heading: form.aboutHeading,
         subheading: form.aboutSubheading,
@@ -98,12 +107,12 @@ export default function AdminSettings() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <h1 className="text-3xl font-bold tracking-tight">Site settings</h1>
-      <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">Edit the public hero, about, contact details and social links.</p>
+      <h1 className="font-display text-3xl font-extrabold tracking-tight">Site settings</h1>
+      <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">Edit the public hero, about, experience, contact details and social links.</p>
 
       <form onSubmit={submit} className="card mt-8 space-y-6 p-6 sm:p-8">
         <section>
-          <h2 className="text-sm font-bold uppercase tracking-wide text-neutral-400">Brand</h2>
+          <h2 className="label">Brand</h2>
           <div className="mt-3 grid gap-4 sm:grid-cols-2">
             <div>
               <label className="label">Site name</label>
@@ -117,14 +126,14 @@ export default function AdminSettings() {
         </section>
 
         <section>
-          <h2 className="text-sm font-bold uppercase tracking-wide text-neutral-400">Hero (home page)</h2>
+          <h2 className="label">Hero (home page)</h2>
           <div className="mt-3 space-y-4">
             <div>
               <label className="label">Eyebrow</label>
               <input className="input" value={form.hero.eyebrow} onChange={setHero('eyebrow')} />
             </div>
             <div>
-              <label className="label">Title</label>
+              <label className="label">Title (split on "." for the gradient line)</label>
               <input className="input" value={form.hero.title} onChange={setHero('title')} />
             </div>
             <div>
@@ -153,7 +162,7 @@ export default function AdminSettings() {
         </section>
 
         <section>
-          <h2 className="text-sm font-bold uppercase tracking-wide text-neutral-400">About</h2>
+          <h2 className="label">About</h2>
           <div className="mt-3 space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
@@ -183,7 +192,7 @@ export default function AdminSettings() {
         </section>
 
         <section>
-          <h2 className="text-sm font-bold uppercase tracking-wide text-neutral-400">Contact & socials</h2>
+          <h2 className="label">Contact & socials</h2>
           <div className="mt-3 grid gap-4 sm:grid-cols-3">
             <div>
               <label className="label">Phone</label>
@@ -213,16 +222,18 @@ export default function AdminSettings() {
         </section>
 
         <section>
-          <h2 className="text-sm font-bold uppercase tracking-wide text-neutral-400">Services & stats (JSON)</h2>
+          <h2 className="label">Structured content (JSON arrays)</h2>
           <div className="mt-3 grid gap-4 lg:grid-cols-2">
-            <div>
-              <label className="label">Services array — [{`{"icon","title","description"}`}]</label>
-              <textarea className="input min-h-40 resize-y font-mono text-xs" value={servicesJson} onChange={(e) => setServicesJson(e.target.value)} />
-            </div>
-            <div>
-              <label className="label">Stats array — [{`{"value","label"}`}]</label>
-              <textarea className="input min-h-40 resize-y font-mono text-xs" value={statsJson} onChange={(e) => setStatsJson(e.target.value)} />
-            </div>
+            {JSON_FIELDS.map((f) => (
+              <div key={f.key} className={f.key === 'experience' ? 'lg:col-span-2' : ''}>
+                <label className="label">{f.label} — {f.hint}</label>
+                <textarea
+                  className="input min-h-32 resize-y font-mono text-xs"
+                  value={json[f.key] || ''}
+                  onChange={(e) => setJson((j) => ({ ...j, [f.key]: e.target.value }))}
+                />
+              </div>
+            ))}
           </div>
         </section>
 
@@ -230,7 +241,7 @@ export default function AdminSettings() {
           <p
             className={`flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-medium ${
               status.type === 'success'
-                ? 'bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400'
+                ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'
                 : 'bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-400'
             }`}
           >

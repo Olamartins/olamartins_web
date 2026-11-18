@@ -10,43 +10,132 @@ const adminPassword = process.env.ADMIN_PASSWORD || 'change-me-please';
 
 const settings = {
   siteName: 'Ola Martins',
-  tagline: 'Business Intelligence Consultant',
+  tagline: 'Senior Data & Business Intelligence Leader',
   hero: {
-    eyebrow: "I'm Martins — Business Intelligence Consultant",
-    title: 'Clarity from Complexity.',
+    eyebrow: "I'm Ola Martins — Senior Data & BI Leader, Port Harcourt, Nigeria",
+    title: 'Clarity from complexity.',
     subtitle:
-      'I bridge the gap between raw data and transformative business strategy — building dashboards and analytics solutions that drive real decisions.',
-    primaryCta: { label: 'Start Your Data Journey', href: '/contact' },
-    secondaryCta: { label: 'Browse the Shop', href: '/shop' },
+      'I design and deliver enterprise BI solutions — semantic models, DAX, KPI dashboards and automated pipelines — that leadership actually uses. 9+ years across Oil & Gas, retail, e-commerce, healthcare and NGOs.',
+    primaryCta: { label: 'Book a free consultation', href: '/contact' },
+    secondaryCta: { label: 'Browse the shop', href: '/shop' },
   },
   stats: [
-    { value: '120+', label: 'Dashboard projects built for clients' },
-    { value: '9+', label: 'Years of analytics experience' },
-    { value: '5', label: 'Industries served' },
+    { value: '9+', label: 'Years in data & BI' },
+    { value: '120+', label: 'Dashboards delivered' },
+    { value: '45%', label: 'More data availability' },
+    { value: '-30%', label: 'Manual processing time' },
+  ],
+  highlights: [
+    {
+      metric: '+45%',
+      title: 'Data availability, unified reporting',
+      description:
+        'Integrated ERP, legacy and cloud sources into one EDW-backed reporting layer at Nigeria LNG, enabling reliable cross-functional reporting across programme, finance and operations.',
+      tag: 'Nigeria LNG',
+    },
+    {
+      metric: '-30%',
+      title: 'Manual processing time',
+      description:
+        'Automated business workflows with Power Automate alongside an ML engineer, cutting manual processing time by 30% and improving operational throughput.',
+      tag: 'Process automation',
+    },
+    {
+      metric: '+45%',
+      title: 'Leadership responsiveness',
+      description:
+        'Delivered end-to-end freelance BI engagements whose tailored reporting and data storytelling improved leadership responsiveness by 45% across client engagements.',
+      tag: 'The Transcender Solutions',
+    },
   ],
   services: [
     {
       icon: 'BarChart3',
-      title: 'Data & Business Intelligence',
-      description: 'Advanced analytics, predictive modeling, KPI dashboard design and data warehousing.',
+      title: 'BI & Advanced Analytics',
+      description: 'Semantic layer design, DAX/MDX, hierarchies, row-level security and EDW-backed KPI dashboards that leadership adopts.',
     },
     {
       icon: 'PenTool',
-      title: 'User-Centered Design & Development',
-      description: 'Intuitive UI/UX for analytics platforms, data storytelling and virtual training systems.',
+      title: 'Data Visualization & UX',
+      description: 'Dashboard design with UX/UI standards and corporate branding — clear visual narratives, not cluttered reports.',
     },
     {
       icon: 'Rocket',
-      title: 'Digital Innovation & Transformation',
-      description: 'Process optimization, workflow automation and technology integration roadmaps.',
+      title: 'Automation & Digital Transformation',
+      description: 'Power Automate workflows, ETL automation, multi-source integration and process optimization roadmaps.',
+    },
+    {
+      icon: 'GraduationCap',
+      title: 'Training & Mentorship',
+      description: 'Power BI, DAX and data-literacy training for teams, plus mentoring junior analysts on modelling and reporting standards.',
     },
   ],
+  experience: [
+    {
+      role: 'Senior Business Intelligence Developer — Contract',
+      company: 'Nigeria LNG Limited, Nigeria',
+      period: 'Jul 2022 – Present',
+      points: [
+        'Own end-to-end delivery of BI and reporting layers: semantic models, DAX measures, hierarchies and RLS aligned to access-control requirements.',
+        'Built KPI dashboards for budget compliance, programme timelines and impact metrics with UX/UI and branding standards for adoption.',
+        'Tuned Power BI models with Import mode, aggregations and query optimization to meet data-refresh SLAs; +45% data availability from ERP/legacy/cloud integration.',
+        'Automated workflows with Power Automate (−30% manual processing); mentored junior analysts on modelling and DAX standards.',
+      ],
+    },
+    {
+      role: 'Data Analytics Executive — Full Time',
+      company: 'SKLD Integrated Services, Lagos',
+      period: 'Jan 2022 – Jun 2022',
+      points: [
+        'Designed dynamic Power BI dashboards for business performance and customer-retention KPIs.',
+        'Root-cause and churn analysis translated into visual narratives that shaped retention strategy.',
+      ],
+    },
+    {
+      role: 'Freelance Business & Data Analyst',
+      company: 'The Transcender Solutions, Lagos (Remote)',
+      period: 'Mar 2017 – Dec 2021',
+      points: [
+        'End-to-end BI engagements across industries: requirements, semantic models, dashboards, executive reporting.',
+        'Reporting and data-storytelling assets improved leadership responsiveness by 45% across engagements.',
+      ],
+    },
+    {
+      role: 'Data Analyst — Full Time',
+      company: 'Living Faith Church Worldwide, Lagos',
+      period: 'Oct 2020 – Nov 2021',
+      points: [
+        'Automated weekly consolidation across 50+ branches with Power Query, eliminating manual aggregation.',
+        'Standardized operational reporting templates, reducing reconciliation effort.',
+      ],
+    },
+    {
+      role: 'IT Instructor — Full Time',
+      company: 'New Horizon System Solutions, Ikeja, Lagos',
+      period: 'Mar 2018 – Sep 2020',
+      points: [
+        'Built performance-tracking dashboards for learner outcomes and engagement.',
+        'Delivered Python and Scratch workshops; 75% improvement in student performance outcomes.',
+      ],
+    },
+  ],
+  certifications: [
+    'MS Certified: Fabric Analytics Engineer Associate (2024)',
+    'MS Certified: Power BI Data Analyst Associate (2024)',
+    'Certified Risk Management Expert — Six Sigma Academy (2024)',
+    'Google Business Intelligence Certificate (2023)',
+    'MS Certified: Azure Fundamentals (2023)',
+    'MS Certified: Power Platform Fundamentals (2022)',
+    'Google Data Analytics Professional Certificate (2021)',
+    'Agile Scrum Master — Simplilearn (2022)',
+  ],
+  tools: ['Power BI', 'DAX', 'Microsoft Fabric', 'Tableau', 'SQL', 'Excel', 'Power Query', 'Python', 'Azure', 'SharePoint', 'R', 'SPSS', 'GitHub'],
   about: {
     heading: 'I Deliver Measurable Results',
-    subheading: 'The Architect of Actionable Insight',
+    subheading: 'Senior Data & BI Leader — Olawumi Fadero (Ola Martins)',
     body: [
-      'I am a strategic leader at the intersection of data science and human-centered design. With over 9 years of experience, I specialize in transforming complex, disconnected data into clear, compelling and actionable business intelligence across industries like Oil & Gas, Retail, E-commerce and Healthcare.',
-      'My unique value lies in a dual mastery: the analytical rigor of a senior data scientist and the intuitive design sense of a UX specialist. A groundbreaking insight is worthless if it is trapped in a poorly designed report.',
+      'Senior Business Intelligence Developer with over 9 years of experience designing and delivering enterprise BI solutions across Oil & Gas, services and non-profit sectors — Power BI, DAX, semantic layer development and ETL architecture, backed by enterprise data warehouses.',
+      'I turn complex business requirements into practical, scalable reporting solutions, working closely with stakeholders through requirements gathering, UAT, deployment and change management — and I mentor junior developers along the way.',
     ],
   },
   mission:
@@ -54,12 +143,12 @@ const settings = {
   vision:
     'A world where every strategic decision is illuminated by clarity, powered by data, and executed with confidence.',
   contact: {
-    phone: '+234-901-450-6008',
-    email: 'contact@olamartins.com',
-    address: 'Port Harcourt, Rivers State, NG 500102',
+    phone: '+2347031373640',
+    email: 'olawumifadero.m@gmail.com',
+    address: 'Port Harcourt, Nigeria',
   },
   socials: {
-    linkedin: 'https://www.linkedin.com/',
+    linkedin: 'https://www.linkedin.com/in/olamartins07',
     twitter: 'https://x.com/',
     medium: 'https://medium.com/',
   },
