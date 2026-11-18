@@ -26,6 +26,18 @@ export function createApp() {
   app.use('/api', publicRoutes);
   app.use('/api/admin', adminRoutes);
 
+  // In development the React app is served by Vite on its own port, so the
+  // API server has no pages to show — point visitors to the right URL.
+  if (config.nodeEnv !== 'production') {
+    app.use((req, res, next) => {
+      if (req.path.startsWith('/api')) return next();
+      res.status(200).json({
+        message: 'API is running. In development, open the website at http://localhost:5173',
+        health: '/api/health',
+      });
+    });
+  }
+
   // In production the same Node process serves the built React app (cPanel)
   if (config.nodeEnv === 'production') {
     const dist = path.resolve(here, '../../client/dist');
