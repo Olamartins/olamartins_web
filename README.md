@@ -34,12 +34,15 @@ A modern, Apple-inspired portfolio website for a Business Intelligence consultan
 
 ```bash
 cp .env.example .env          # then fill in DB_* and ADMIN_* values
-# create a local PostgreSQL database, e.g.:  createdb olamartins_db
 npm install                   # installs client + server (workspaces)
-npm run seed                  # creates tables, the admin account and demo content
+npm run seed                  # creates the database (if allowed), tables, admin and demo content
 npm run dev:server            # API on http://localhost:5000
 npm run dev:client            # Vite dev server on http://localhost:5173 (proxies /api)
 ```
+
+> The server auto-creates the database named in `DB_NAME` when your PostgreSQL user has `CREATEDB`
+> rights (true for a default local install). If not, create it once with `createdb olamartins_db`
+> (macOS/Linux) or via pgAdmin (Windows), then run the seed again.
 
 Open http://localhost:5173 — the site works without login.
 Open http://localhost:5173/admin/login and sign in with the `ADMIN_EMAIL` / `ADMIN_PASSWORD` from your `.env`.
