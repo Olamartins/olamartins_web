@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion';
-import { BarChart3, CalendarPlus, Lock, Menu, X } from 'lucide-react';
+import { CalendarPlus, Lock, Menu, X } from 'lucide-react';
 import ThemeToggle from './ThemeToggle.jsx';
+import { api } from '../api/client.js';
 
 const LINKS = [
   { to: '/', label: 'Home' },
@@ -13,12 +14,23 @@ const LINKS = [
   { to: '/contact', label: 'Contact' },
 ];
 
+const CALENDLY_URL = 'https://calendly.com/olamartins/30min';
+const DEFAULT_LOGO = '/martins-analytics-logo.png';
+
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [logoUrl, setLogoUrl] = useState(DEFAULT_LOGO);
   const { pathname } = useLocation();
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 140, damping: 24 });
+
+  useEffect(() => {
+    api
+      .get('/site')
+      .then((d) => setLogoUrl(d.settings?.branding?.logoUrl || DEFAULT_LOGO))
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -38,14 +50,16 @@ export default function Navbar() {
       }`}
     >
       <motion.div
-        className="absolute inset-x-0 top-0 h-0.5 origin-left bg-gradient-to-r from-blue-700 via-blue-500 to-sky-400"
+        className="absolute inset-x-0 top-0 h-0.5 origin-left bg-gradient-to-r from-blue-800 via-blue-600 to-blue-400"
         style={{ scaleX: progress }}
       />
       <nav className="container-site flex h-16 items-center justify-between">
         <Link to="/" className="group flex items-center gap-2.5">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-700 to-blue-500 text-white shadow-lg shadow-blue-600/30 transition group-hover:scale-105">
-            <BarChart3 size={18} />
-          </span>
+          <img
+            src={logoUrl}
+            alt="Martins Analytics logo"
+            className="h-9 w-9 rounded-[10px] object-cover shadow-md shadow-blue-600/20 ring-1 ring-blue-900/10 transition group-hover:scale-105 dark:ring-white/15"
+          />
           <span className="font-display text-lg font-bold tracking-tight">
             Ola<span className="text-gradient-blue">Martins</span>
           </span>
@@ -58,10 +72,10 @@ export default function Navbar() {
               to={link.to}
               end={link.to === '/'}
               className={({ isActive }) =>
-                `rounded-full px-3.5 py-2 text-sm font-medium transition ${
+                `rounded-[12px] px-3.5 py-2 text-sm font-medium transition ${
                   isActive
                     ? 'bg-blue-600/10 text-blue-700 dark:bg-blue-500/15 dark:text-blue-300'
-                    : 'text-neutral-600 hover:bg-blue-50 hover:text-blue-700 dark:text-neutral-300 dark:hover:bg-white/5 dark:hover:text-blue-200'
+                    : 'text-[#5c677d] hover:bg-blue-50 hover:text-[#0353a4] dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-blue-200'
                 }`
               }
             >
@@ -72,13 +86,18 @@ export default function Navbar() {
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <Link to="/contact" className="btn-primary hidden !px-4 !py-2 text-[13px] sm:inline-flex">
+          <a
+            href={CALENDLY_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="btn-primary hidden !rounded-[12px] !px-4 !py-2 text-[13px] sm:inline-flex"
+          >
             <CalendarPlus size={15} /> Book a call
-          </Link>
+          </a>
           <Link
             to="/admin"
             aria-label="Admin dashboard"
-            className="hidden h-9 w-9 items-center justify-center rounded-full text-neutral-500 transition hover:bg-blue-50 hover:text-blue-700 dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-blue-300 lg:flex"
+            className="hidden h-9 w-9 items-center justify-center rounded-full text-[#5c677d] transition hover:bg-blue-50 hover:text-[#0353a4] dark:text-neutral-400 dark:hover:bg-white/5 dark:hover:text-blue-300 lg:flex"
           >
             <Lock size={16} />
           </Link>
@@ -86,7 +105,7 @@ export default function Navbar() {
             type="button"
             onClick={() => setOpen((o) => !o)}
             aria-label="Toggle menu"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-blue-100 bg-white/70 text-neutral-700 dark:border-blue-900/60 dark:bg-white/5 dark:text-neutral-200 lg:hidden"
+            className="flex h-9 w-9 items-center justify-center rounded-[12px] border border-blue-100 bg-white/70 text-neutral-700 dark:border-blue-900/60 dark:bg-white/5 dark:text-neutral-200 lg:hidden"
           >
             {open ? <X size={18} /> : <Menu size={18} />}
           </button>
@@ -109,22 +128,22 @@ export default function Navbar() {
                   to={link.to}
                   end={link.to === '/'}
                   className={({ isActive }) =>
-                    `rounded-xl px-4 py-2.5 text-sm font-medium ${
+                    `rounded-[12px] px-4 py-2.5 text-sm font-medium ${
                       isActive
                         ? 'bg-blue-600/10 text-blue-700 dark:bg-blue-500/15 dark:text-blue-300'
-                        : 'text-neutral-700 hover:bg-blue-50 dark:text-neutral-200 dark:hover:bg-white/5'
+                        : 'text-[#5c677d] hover:bg-blue-50 dark:text-neutral-400 dark:hover:bg-white/5'
                     }`
                   }
                 >
                   {link.label}
                 </NavLink>
               ))}
-              <Link to="/contact" className="btn-primary mt-2 justify-center">
+              <a href={CALENDLY_URL} target="_blank" rel="noreferrer" className="btn-primary mt-2 justify-center !rounded-[12px]">
                 <CalendarPlus size={15} /> Book a call
-              </Link>
+              </a>
               <Link
                 to="/admin"
-                className="mt-1 flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-neutral-700 hover:bg-blue-50 dark:text-neutral-200 dark:hover:bg-white/5"
+                className="mt-1 flex items-center gap-2 rounded-[12px] px-4 py-2.5 text-sm font-medium text-[#5c677d] hover:bg-blue-50 dark:text-neutral-400 dark:hover:bg-white/5"
               >
                 <Lock size={14} /> Admin
               </Link>

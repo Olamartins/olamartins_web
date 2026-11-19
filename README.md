@@ -2,8 +2,9 @@
 
 A modern, Apple-inspired portfolio website for a Business Intelligence consultant, with a built-in admin CMS.
 
-- **Public site** (no login needed): Home, About, **Resources** (free ebooks/videos), **Shop** (digital products sold via [Selar](https://selar.co)), Articles, Contact. Dark/light mode included.
-- **Admin CMS** (`/admin`): sign in to manage resources, products, articles, consultation messages and site settings.
+- **Public site** (no login needed): Home, About, **Resources** (free ebooks/videos), **Shop** (digital products sold via [Selar](https://selar.co)), Articles, Contact. Dark/light mode included, plus a **rule-based chatbot** (no LLM API) that answers from a fixed rule set with quick replies and links.
+- **Admin CMS** (`/admin`): sign in to manage resources, products, articles, consultation messages and site settings through a **WordPress-style GUI** (text fields, list editors, image uploads served from `/uploads`) — no JSON editing needed.
+- Consultation form submissions are stored in the DB **and emailed** to `NOTIFY_EMAIL` via the server's sendmail (free; see `docs/DEPLOYMENT.md`).
 
 ## Stack
 

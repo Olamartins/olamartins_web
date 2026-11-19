@@ -13,12 +13,14 @@ import {
 import {
   listConsultations, updateConsultation, deleteConsultation, getStats,
 } from '../controllers/messagesController.js';
+import { uploadImage } from '../controllers/uploadController.js';
 
 const router = Router();
 
 router.use(requireAdmin);
 
 router.get('/stats', getStats);
+router.post('/upload', uploadImage);
 
 router.get('/settings', getSite);
 router.put('/settings', updateSite);

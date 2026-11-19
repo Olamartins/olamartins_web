@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Award, Briefcase, Target, Eye } from 'lucide-react';
+import { ArrowRight, Award, Briefcase, Github, Linkedin, Mail, MapPin, Phone, Target, Eye } from 'lucide-react';
 import { api } from '../api/client.js';
 import PageHero from '../components/PageHero.jsx';
 import Reveal from '../components/Reveal.jsx';
 import Spinner from '../components/Spinner.jsx';
+import { Markdown } from '../utils/markdown.jsx';
+
+const DEFAULT_PROFILE = '/olamartins-profile.jpg';
 
 export default function About() {
   const [settings, setSettings] = useState(null);
@@ -30,17 +33,56 @@ export default function About() {
         subtitle="Senior Data & Business Intelligence Leader — 9+ years turning complex data into decisions across Oil & Gas, retail, e-commerce, healthcare and NGOs."
       />
 
+      {/* Profile card */}
+      <section className="container-site pb-16">
+        <Reveal>
+          <div className="card relative overflow-hidden p-6 sm:p-8">
+            <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-blue-600/10 blur-3xl" />
+            <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center">
+              <img
+                src={settings.branding?.profileImage || DEFAULT_PROFILE}
+                alt="Olawumi (Ola) Martins"
+                className="h-32 w-32 shrink-0 rounded-[18px] object-cover shadow-glow ring-4 ring-blue-50 dark:ring-white/10 sm:h-40 sm:w-40"
+              />
+              <div className="min-w-0">
+                <h2 className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl">Olawumi Fadero (Ola Martins)</h2>
+                <p className="mt-1 font-display text-base font-bold text-blue-700 dark:text-blue-300">{settings.tagline}</p>
+                <div className="mt-4 flex flex-wrap gap-2 text-[13px]">
+                  {settings.contact?.address && (
+                    <span className="badge"><MapPin size={13} /> {settings.contact.address}</span>
+                  )}
+                  {settings.contact?.email && (
+                    <a className="badge hover:border-blue-300" href={`mailto:${settings.contact.email}`}><Mail size={13} /> {settings.contact.email}</a>
+                  )}
+                  {settings.contact?.phone && (
+                    <a className="badge hover:border-blue-300" href={`tel:${settings.contact.phone}`}><Phone size={13} /> {settings.contact.phone}</a>
+                  )}
+                  {settings.socials?.linkedin && (
+                    <a className="badge hover:border-blue-300" href={settings.socials.linkedin} target="_blank" rel="noreferrer"><Linkedin size={13} /> LinkedIn</a>
+                  )}
+                  <a className="badge hover:border-blue-300" href="https://github.com/Olamartins" target="_blank" rel="noreferrer"><Github size={13} /> GitHub</a>
+                </div>
+                <div className="mt-5 flex flex-wrap gap-2.5">
+                  <a href="https://calendly.com/olamartins/30min" target="_blank" rel="noreferrer" className="btn-primary !rounded-[12px] !px-4 !py-2 text-[13px]">
+                    Book a call <ArrowRight size={14} />
+                  </a>
+                  <Link to="/contact" className="btn-secondary !rounded-[12px] !px-4 !py-2 text-[13px]">Send a message</Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Reveal>
+      </section>
+
       {/* Bio */}
       <section className="container-site pb-20">
         <div className="grid gap-12 lg:grid-cols-[1.2fr_1fr] lg:items-start">
           <Reveal>
             <h2 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">{about.heading}</h2>
             <p className="mt-3 font-display text-lg font-bold text-blue-700 dark:text-blue-300">{about.subheading}</p>
-            {(about.body || []).map((para, i) => (
-              <p key={i} className="mt-4 leading-8 text-neutral-600 dark:text-neutral-400">
-                {para}
-              </p>
-            ))}
+            <div className="mt-4 leading-8 text-neutral-600 dark:text-neutral-400">
+              <Markdown text={(about.body || []).join('\n\n')} />
+            </div>
             <div className="mt-6 flex flex-wrap gap-2">
               {tools.map((t) => (
                 <span key={t} className="badge">{t}</span>

@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
-import { BarChart3, BookOpen, Github, Linkedin, Twitter } from 'lucide-react';
+import { BookOpen, Github, Linkedin, Twitter } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { api } from '../api/client.js';
+
+const DEFAULT_LOGO = '/martins-analytics-logo.png';
 
 export default function Footer() {
   const [settings, setSettings] = useState(null);
@@ -10,6 +12,8 @@ export default function Footer() {
   useEffect(() => {
     api.get('/site').then((d) => setSettings(d.settings)).catch(() => {});
   }, []);
+
+  const logoUrl = settings?.branding?.logoUrl || DEFAULT_LOGO;
 
   const socials = settings?.socials || {};
   const contact = settings?.contact || {};
@@ -20,9 +24,7 @@ export default function Footer() {
       <div className="container-site relative grid gap-10 py-16 md:grid-cols-4">
         <div>
           <p className="flex items-center gap-2.5">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-blue-400 text-white">
-              <BarChart3 size={18} />
-            </span>
+            <img src={logoUrl} alt="Martins Analytics logo" className="h-9 w-9 rounded-[10px] object-cover ring-1 ring-white/15" />
             <span className="font-display text-lg font-bold text-white">
               Ola<span className="text-blue-400">Martins</span>
             </span>

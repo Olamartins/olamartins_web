@@ -90,7 +90,7 @@ export default function Chatbot() {
                             key={l.to + l.label}
                             to={l.to}
                             onClick={() => setOpen(false)}
-                            className="rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white transition hover:bg-blue-700"
+                            className="rounded-[12px] bg-blue-600 px-3 py-1 text-xs font-semibold text-white transition hover:bg-blue-700"
                           >
                             {l.label}
                           </Link>
@@ -123,7 +123,7 @@ export default function Chatbot() {
                     key={q}
                     type="button"
                     onClick={() => send(q)}
-                    className="rounded-full border border-blue-200 bg-white px-3 py-1 text-xs font-semibold text-blue-700 transition hover:bg-blue-50 dark:border-blue-800/60 dark:bg-white/5 dark:text-blue-300 dark:hover:bg-white/10"
+                    className="rounded-[12px] border border-blue-200 bg-white px-3 py-1 text-xs font-semibold text-blue-700 transition hover:bg-blue-50 dark:border-blue-800/60 dark:bg-white/5 dark:text-blue-300 dark:hover:bg-white/10"
                   >
                     {q}
                   </button>
@@ -144,7 +144,7 @@ export default function Chatbot() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
               />
-              <button type="submit" aria-label="Send" className="btn-primary !h-10 !w-10 shrink-0 !rounded-full !p-0" disabled={!input.trim()}>
+              <button type="submit" aria-label="Send" className="btn-primary !h-10 !w-10 shrink-0 !rounded-[12px] !p-0" disabled={!input.trim()}>
                 <Send size={16} />
               </button>
             </form>

@@ -4,6 +4,7 @@ import { query } from '../config/db.js';
 const DEFAULT_SETTINGS = {
   siteName: 'Ola Martins',
   tagline: 'Business Intelligence Consultant',
+  branding: { logoUrl: '/martins-analytics-logo.png', profileImage: '/olamartins-profile.jpg' },
   hero: {
     eyebrow: "I'm Martins — Business Intelligence Consultant",
     title: 'Clarity from Complexity.',

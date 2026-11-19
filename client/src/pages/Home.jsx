@@ -97,13 +97,12 @@ function DashboardMock() {
   );
 }
 
-function FaqItem({ q, a, i }) {
-  const [open, setOpen] = useState(i === 0);
+function FaqItem({ q, a, open, onToggle }) {
   return (
     <div className="card overflow-hidden">
       <button
         type="button"
-        onClick={() => setOpen((o) => !o)}
+        onClick={onToggle}
         className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
       >
         <span className="font-display text-[15px] font-bold tracking-tight">{q}</span>
@@ -130,6 +129,7 @@ function FaqItem({ q, a, i }) {
 export default function Home() {
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
+  const [openFaq, setOpenFaq] = useState(0);
 
   useEffect(() => {
     Promise.all([
@@ -212,12 +212,32 @@ export default function Home() {
               transition={{ duration: 0.65, delay: 0.26 }}
               className="mt-9 flex flex-wrap gap-3"
             >
-              <Link to={hero.primaryCta?.href || '/contact'} className="btn-primary">
-                <CalendarPlus size={16} /> {hero.primaryCta?.label || 'Book a free consultation'}
-              </Link>
-              <Link to={hero.secondaryCta?.href || '/shop'} className="btn-secondary">
-                <ShoppingBag size={16} /> {hero.secondaryCta?.label || 'Browse the shop'}
-              </Link>
+              {(() => {
+                const cta = hero.primaryCta || { label: 'Book a free consultation', href: '/contact' };
+                const inner = (
+                  <>
+                    <CalendarPlus size={16} /> {cta.label}
+                  </>
+                );
+                return cta.href?.startsWith('http') ? (
+                  <a href={cta.href} target="_blank" rel="noreferrer" className="btn-primary">{inner}</a>
+                ) : (
+                  <Link to={cta.href || '/contact'} className="btn-primary">{inner}</Link>
+                );
+              })()}
+              {(() => {
+                const cta = hero.secondaryCta || { label: 'Browse the shop', href: '/shop' };
+                const inner = (
+                  <>
+                    <ShoppingBag size={16} /> {cta.label}
+                  </>
+                );
+                return cta.href?.startsWith('http') ? (
+                  <a href={cta.href} target="_blank" rel="noreferrer" className="btn-secondary">{inner}</a>
+                ) : (
+                  <Link to={cta.href || '/shop'} className="btn-secondary">{inner}</Link>
+                );
+              })()}
             </motion.div>
           </div>
 
@@ -399,7 +419,12 @@ export default function Home() {
           <div className="space-y-3">
             {FAQS.map((f, i) => (
               <Reveal key={f.q} delay={i * 0.04}>
-                <FaqItem q={f.q} a={f.a} i={i} />
+                <FaqItem
+                  q={f.q}
+                  a={f.a}
+                  open={openFaq === i}
+                  onToggle={() => setOpenFaq((cur) => (cur === i ? -1 : i))}
+                />
               </Reveal>
             ))}
           </div>

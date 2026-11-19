@@ -11,12 +11,13 @@ const adminPassword = process.env.ADMIN_PASSWORD || 'change-me-please';
 const settings = {
   siteName: 'Ola Martins',
   tagline: 'Senior Data & Business Intelligence Leader',
+  branding: { logoUrl: '/martins-analytics-logo.png', profileImage: '/olamartins-profile.jpg' },
   hero: {
     eyebrow: "I'm Ola Martins — Senior Data & BI Leader, Port Harcourt, Nigeria",
     title: 'Clarity from complexity.',
     subtitle:
       'I design and deliver enterprise BI solutions — semantic models, DAX, KPI dashboards and automated pipelines — that leadership actually uses. 9+ years across Oil & Gas, retail, e-commerce, healthcare and NGOs.',
-    primaryCta: { label: 'Book a free consultation', href: '/contact' },
+    primaryCta: { label: 'Book a call', href: 'https://calendly.com/olamartins/30min' },
     secondaryCta: { label: 'Browse the shop', href: '/shop' },
   },
   stats: [
