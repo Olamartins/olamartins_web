@@ -16,6 +16,12 @@ export const config = {
   jwtSecret: process.env.JWT_SECRET || 'dev-only-insecure-secret',
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
   cookieSecure: process.env.COOKIE_SECURE === 'true',
+  mail: {
+    // Free email delivery on cPanel uses the local sendmail binary — no paid API needed
+    from: process.env.MAIL_FROM || 'no-reply@olamartins.com',
+    notifyTo: process.env.NOTIFY_EMAIL || process.env.ADMIN_EMAIL || '',
+    sendmailPath: process.env.SENDMAIL_PATH || '/usr/sbin/sendmail',
+  },
   db: {
     host: process.env.DB_HOST || 'localhost',
     port: Number(process.env.DB_PORT || 5432),

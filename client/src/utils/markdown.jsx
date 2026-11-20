@@ -25,7 +25,10 @@ export function renderMarkdown(text) {
       if (line.startsWith('### ')) pushBlock({ type: 'h3', children: renderInline(line.slice(4), `${i}`) });
       else if (line.startsWith('## ')) pushBlock({ type: 'h2', children: renderInline(line.slice(3), `${i}`) });
       else if (line.startsWith('# ')) pushBlock({ type: 'h1', children: renderInline(line.slice(2), `${i}`) });
-      else pushBlock({ type: 'p', children: renderInline(line, `${i}`) });
+      else if (/^!\[[^\]]*\]\([^)]+\)$/.test(line)) {
+        const m = /^!\[([^\]]*)\]\(([^)]+)\)$/.exec(line);
+        pushBlock({ type: 'img', src: m[2], alt: m[1] });
+      } else pushBlock({ type: 'p', children: renderInline(line, `${i}`) });
     }
   });
   closeList();
@@ -58,6 +61,9 @@ export function Markdown({ text }) {
   return (
     <div>
       {renderMarkdown(text).map((block, i) => {
+        if (block.type === 'img') {
+          return <img key={i} src={block.src} alt={block.alt} className="my-6 w-full rounded-[14px] border border-blue-100 dark:border-blue-900/60" />;
+        }
         const cls = blockClasses[block.type];
         if (block.type === 'ul') {
           return (

@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, ImagePlus } from 'lucide-react';
 import { api } from '../../api/client.js';
 import Spinner from '../../components/Spinner.jsx';
+import ImageUpload from '../../components/admin/ImageUpload.jsx';
+import { ArrayEditor, StringListEditor } from '../../components/admin/ArrayEditor.jsx';
 
-// Edits the public site content: hero, about, mission/vision, contact, socials.
-// services/stats stay as JSON (editable here too, carefully).
+const ICON_OPTIONS = ['BarChart3', 'LineChart', 'Database', 'PenTool', 'Rocket', 'Target', 'Cpu', 'Zap'];
+
 export default function AdminSettings() {
   const [form, setForm] = useState(null);
-  const [servicesJson, setServicesJson] = useState('');
-  const [statsJson, setStatsJson] = useState('');
+  const [arrays, setArrays] = useState(null);
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState({ type: null, message: '' });
 
@@ -18,6 +19,8 @@ export default function AdminSettings() {
       setForm({
         siteName: s.siteName || '',
         tagline: s.tagline || '',
+        logoUrl: s.branding?.logoUrl || '',
+        profileImage: s.branding?.profileImage || '',
         hero: {
           eyebrow: s.hero?.eyebrow || '',
           title: s.hero?.title || '',
@@ -35,36 +38,40 @@ export default function AdminSettings() {
         contactPhone: s.contact?.phone || '',
         contactEmail: s.contact?.email || '',
         contactAddress: s.contact?.address || '',
+        contactWhatsapp: s.contact?.whatsapp || '',
         linkedin: s.socials?.linkedin || '',
         twitter: s.socials?.twitter || '',
         medium: s.socials?.medium || '',
       });
-      setServicesJson(JSON.stringify(s.services || [], null, 2));
-      setStatsJson(JSON.stringify(s.stats || [], null, 2));
+      setArrays({
+        services: s.services || [],
+        stats: s.stats || [],
+        highlights: s.highlights || [],
+        experience: s.experience || [],
+        certifications: s.certifications || [],
+        tools: s.tools || [],
+      });
     }).catch((err) => setStatus({ type: 'error', message: err.message }));
   }, []);
 
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
   const setHero = (key) => (e) => setForm((f) => ({ ...f, hero: { ...f.hero, [key]: e.target.value } }));
+  const setArr = (key) => (val) => setArrays((a) => ({ ...a, [key]: val }));
+
+  const insertImageIntoAbout = (url) => {
+    if (!url) return;
+    setForm((f) => ({ ...f, aboutBody: `${f.aboutBody}\n\n![image](${url})`.trim() }));
+  };
 
   const submit = async (e) => {
     e.preventDefault();
     setSaving(true);
     setStatus({ type: null, message: '' });
-    let services;
-    let stats;
-    try {
-      services = JSON.parse(servicesJson || '[]');
-      stats = JSON.parse(statsJson || '[]');
-      if (!Array.isArray(services) || !Array.isArray(stats)) throw new Error('Services and stats must be JSON arrays');
-    } catch {
-      setStatus({ type: 'error', message: 'Services / stats must be valid JSON arrays.' });
-      setSaving(false);
-      return;
-    }
+    const cleanLines = (arr) => arr.map((s) => String(s).trim()).filter(Boolean);
     const payload = {
       siteName: form.siteName,
       tagline: form.tagline,
+      branding: { logoUrl: form.logoUrl, profileImage: form.profileImage },
       hero: {
         eyebrow: form.hero.eyebrow,
         title: form.hero.title,
@@ -72,8 +79,12 @@ export default function AdminSettings() {
         primaryCta: { label: form.hero.primaryLabel, href: form.hero.primaryHref || '/contact' },
         secondaryCta: { label: form.hero.secondaryLabel, href: form.hero.secondaryHref || '/shop' },
       },
-      stats,
-      services,
+      services: arrays.services,
+      stats: arrays.stats,
+      highlights: arrays.highlights,
+      experience: arrays.experience.map((j) => ({ ...j, points: cleanLines(j.points || []) })),
+      certifications: cleanLines(arrays.certifications),
+      tools: cleanLines(arrays.tools),
       about: {
         heading: form.aboutHeading,
         subheading: form.aboutSubheading,
@@ -81,7 +92,7 @@ export default function AdminSettings() {
       },
       mission: form.mission,
       vision: form.vision,
-      contact: { phone: form.contactPhone, email: form.contactEmail, address: form.contactAddress },
+      contact: { phone: form.contactPhone, email: form.contactEmail, address: form.contactAddress, whatsapp: form.contactWhatsapp },
       socials: { linkedin: form.linkedin, twitter: form.twitter, medium: form.medium },
     };
     try {
@@ -94,17 +105,23 @@ export default function AdminSettings() {
     }
   };
 
-  if (!form) return <Spinner label="Loading settings…" />;
+  if (!form || !arrays) return <Spinner label="Loading settings…" />;
 
   return (
     <div className="mx-auto max-w-3xl">
-      <h1 className="text-3xl font-bold tracking-tight">Site settings</h1>
-      <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">Edit the public hero, about, contact details and social links.</p>
+      <h1 className="font-display text-3xl font-extrabold tracking-tight">Site settings</h1>
+      <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
+        Edit everything visually — text, images, lists — no JSON needed. Changes go live immediately.
+      </p>
 
-      <form onSubmit={submit} className="card mt-8 space-y-6 p-6 sm:p-8">
+      <form onSubmit={submit} className="card mt-8 space-y-8 p-6 sm:p-8">
         <section>
-          <h2 className="text-sm font-bold uppercase tracking-wide text-neutral-400">Brand</h2>
-          <div className="mt-3 grid gap-4 sm:grid-cols-2">
+          <h2 className="label">Branding</h2>
+          <div className="mt-3 grid gap-6 sm:grid-cols-2">
+            <ImageUpload label="Site logo (navbar & footer)" value={form.logoUrl} onChange={(v) => setForm((f) => ({ ...f, logoUrl: v }))} />
+            <ImageUpload label="Profile photo (About page)" value={form.profileImage} onChange={(v) => setForm((f) => ({ ...f, profileImage: v }))} />
+          </div>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
             <div>
               <label className="label">Site name</label>
               <input className="input" value={form.siteName} onChange={set('siteName')} />
@@ -117,14 +134,14 @@ export default function AdminSettings() {
         </section>
 
         <section>
-          <h2 className="text-sm font-bold uppercase tracking-wide text-neutral-400">Hero (home page)</h2>
+          <h2 className="label">Hero (home page)</h2>
           <div className="mt-3 space-y-4">
             <div>
               <label className="label">Eyebrow</label>
               <input className="input" value={form.hero.eyebrow} onChange={setHero('eyebrow')} />
             </div>
             <div>
-              <label className="label">Title</label>
+              <label className="label">Title (split on "." — the rest becomes the gradient line)</label>
               <input className="input" value={form.hero.title} onChange={setHero('title')} />
             </div>
             <div>
@@ -137,8 +154,8 @@ export default function AdminSettings() {
                 <input className="input" value={form.hero.primaryLabel} onChange={setHero('primaryLabel')} />
               </div>
               <div>
-                <label className="label">Primary button link</label>
-                <input className="input" value={form.hero.primaryHref} onChange={setHero('primaryHref')} placeholder="/contact" />
+                <label className="label">Primary button link (internal path or full https:// URL)</label>
+                <input className="input" value={form.hero.primaryHref} onChange={setHero('primaryHref')} placeholder="/contact or https://calendly.com/…" />
               </div>
               <div>
                 <label className="label">Secondary button label</label>
@@ -153,7 +170,7 @@ export default function AdminSettings() {
         </section>
 
         <section>
-          <h2 className="text-sm font-bold uppercase tracking-wide text-neutral-400">About</h2>
+          <h2 className="label">About page</h2>
           <div className="mt-3 space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
@@ -166,8 +183,13 @@ export default function AdminSettings() {
               </div>
             </div>
             <div>
-              <label className="label">Body (paragraphs separated by a blank line)</label>
+              <label className="label">Bio text (paragraphs separated by a blank line)</label>
               <textarea className="input min-h-32 resize-y" value={form.aboutBody} onChange={set('aboutBody')} />
+              <div className="mt-2 flex items-center gap-3">
+                <span className="text-xs text-neutral-500 dark:text-neutral-400">Insert an image into the bio:</span>
+                <ImageUpload value="" onChange={insertImageIntoAbout} />
+                <ImagePlus size={0} className="hidden" />
+              </div>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
@@ -183,7 +205,7 @@ export default function AdminSettings() {
         </section>
 
         <section>
-          <h2 className="text-sm font-bold uppercase tracking-wide text-neutral-400">Contact & socials</h2>
+          <h2 className="label">Contact & socials</h2>
           <div className="mt-3 grid gap-4 sm:grid-cols-3">
             <div>
               <label className="label">Phone</label>
@@ -196,6 +218,10 @@ export default function AdminSettings() {
             <div>
               <label className="label">Address</label>
               <input className="input" value={form.contactAddress} onChange={set('contactAddress')} />
+            </div>
+            <div>
+              <label className="label">WhatsApp number (with country code, e.g. +23412345678)</label>
+              <input className="input" value={form.contactWhatsapp} onChange={set('contactWhatsapp')} placeholder="+23412345678" />
             </div>
             <div>
               <label className="label">LinkedIn URL</label>
@@ -212,25 +238,64 @@ export default function AdminSettings() {
           </div>
         </section>
 
-        <section>
-          <h2 className="text-sm font-bold uppercase tracking-wide text-neutral-400">Services & stats (JSON)</h2>
-          <div className="mt-3 grid gap-4 lg:grid-cols-2">
-            <div>
-              <label className="label">Services array — [{`{"icon","title","description"}`}]</label>
-              <textarea className="input min-h-40 resize-y font-mono text-xs" value={servicesJson} onChange={(e) => setServicesJson(e.target.value)} />
-            </div>
-            <div>
-              <label className="label">Stats array — [{`{"value","label"}`}]</label>
-              <textarea className="input min-h-40 resize-y font-mono text-xs" value={statsJson} onChange={(e) => setStatsJson(e.target.value)} />
-            </div>
+        <section className="space-y-6">
+          <h2 className="label">Home & about content lists</h2>
+          <ArrayEditor
+            label="Services (home)"
+            value={arrays.services}
+            onChange={setArr('services')}
+            addLabel="Add service"
+            fields={[
+              { key: 'icon', label: 'Icon', type: 'select', options: ICON_OPTIONS },
+              { key: 'title', label: 'Title', type: 'text' },
+              { key: 'description', label: 'Description', type: 'textarea' },
+            ]}
+          />
+          <ArrayEditor
+            label="Stats (home / about)"
+            value={arrays.stats}
+            onChange={setArr('stats')}
+            addLabel="Add stat"
+            fields={[
+              { key: 'value', label: 'Value (e.g. 9+, 45%)', type: 'text' },
+              { key: 'label', label: 'Label', type: 'text' },
+            ]}
+          />
+          <ArrayEditor
+            label="Selected results / highlights (home)"
+            value={arrays.highlights}
+            onChange={setArr('highlights')}
+            addLabel="Add highlight"
+            fields={[
+              { key: 'metric', label: 'Metric (e.g. +45%)', type: 'text' },
+              { key: 'title', label: 'Title', type: 'text' },
+              { key: 'description', label: 'Description', type: 'textarea' },
+              { key: 'tag', label: 'Tag (e.g. company)', type: 'text' },
+            ]}
+          />
+          <ArrayEditor
+            label="Experience timeline (about)"
+            value={arrays.experience}
+            onChange={setArr('experience')}
+            addLabel="Add role"
+            fields={[
+              { key: 'role', label: 'Role', type: 'text' },
+              { key: 'company', label: 'Company', type: 'text' },
+              { key: 'period', label: 'Period (e.g. Jul 2022 – Present)', type: 'text' },
+              { key: 'points', label: 'Achievements (one per line)', type: 'lines' },
+            ]}
+          />
+          <div className="grid gap-6 sm:grid-cols-2">
+            <StringListEditor label="Certifications (about)" value={arrays.certifications} onChange={setArr('certifications')} addLabel="Add certification" />
+            <StringListEditor label="Tools / skills chips (about)" value={arrays.tools} onChange={setArr('tools')} addLabel="Add tool" />
           </div>
         </section>
 
         {status.type && (
           <p
-            className={`flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-medium ${
+            className={`flex items-center gap-2 rounded-[12px] px-4 py-3 text-sm font-medium ${
               status.type === 'success'
-                ? 'bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400'
+                ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'
                 : 'bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-400'
             }`}
           >

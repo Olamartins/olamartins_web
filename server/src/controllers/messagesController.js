@@ -1,19 +1,69 @@
 import { query } from '../config/db.js';
+import { config } from '../config/env.js';
+import { sendMail } from '../utils/mailer.js';
 
-const COLUMNS = 'id, first_name, last_name, email, code, zip_code, message, status, created_at';
+const COLUMNS = 'id, first_name, last_name, email, code, zip_code, phone, message, status, created_at';
 
-// Public: submit the "Get a Free Consultation" form
+// Public: submit the "Get a Free Consultation" form.
+// The request is stored in the DB (visible in /admin/messages) and emailed
+// to the site owner via the server's sendmail when NOTIFY_EMAIL is set.
 export async function createConsultation(req, res, next) {
   try {
-    const { firstName, lastName = '', email, code = '', zipCode = '', message } = req.body || {};
+    // Accepts { countryCode: '+234', phone: '8012345678' } from the new form,
+    // and the legacy { code, zipCode } shape as a fallback.
+    const {
+      firstName, lastName = '', email, message,
+      countryCode = '', phone = '', code = '', zipCode = '',
+    } = req.body || {};
     if (!firstName || !email || !message) {
       return res.status(400).json({ message: 'First name, email and message are required' });
     }
+    const dial = String(countryCode || code || '').replace(/[^\d]/g, '');
+    let national = String(phone || zipCode || '').replace(/[^\d]/g, '');
+    if (dial && national.startsWith(dial)) national = national.slice(dial.length);
+    if (national.startsWith('0')) national = national.slice(1); // trunk prefix
+    if (national && (national.length < 5 || national.length > 15)) {
+      return res.status(400).json({ message: 'Please enter a valid phone number for the selected country' });
+    }
+    const fullPhone = national ? `+${dial || ''}${national}` : '';
+    const clean = {
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      email: email.toLowerCase().trim(),
+      code: dial ? `+${dial}` : '',
+      zipCode: national,
+      phone: fullPhone,
+      message: message.trim(),
+    };
     const { rows } = await query(
-      `INSERT INTO consultation_requests (first_name, last_name, email, code, zip_code, message)
-       VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, created_at`,
-      [firstName.trim(), lastName.trim(), email.toLowerCase().trim(), code.trim(), zipCode.trim(), message.trim()]
+      `INSERT INTO consultation_requests (first_name, last_name, email, code, zip_code, phone, message)
+       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, created_at`,
+      [clean.firstName, clean.lastName, clean.email, clean.code, clean.zipCode, clean.phone, clean.message]
     );
+
+    const lines = [
+      `Name: ${clean.firstName} ${clean.lastName}`.trim(),
+      `Email: ${clean.email}`,
+      clean.phone ? `Phone: ${clean.phone}` : null,
+      '',
+      'Message:',
+      clean.message,
+      '',
+      `Submitted via olamartins.com at ${new Date().toISOString()}`,
+    ].filter((l) => l !== null);
+
+    const notify = await sendMail({
+      to: config.mail.notifyTo,
+      subject: `New consultation request from ${clean.firstName} — olamartins.com`,
+      text: lines.join('\n'),
+    });
+    if (!notify.sent) console.warn('Consultation email not sent:', notify.reason);
+    await sendMail({
+      to: clean.email,
+      subject: 'We received your consultation request — Ola Martins',
+      text: `Hi ${clean.firstName},\n\nThank you for reaching out via olamartins.com. Your consultation request has been received and Ola will reply within one business day.\n\nYour message:\n${clean.message}\n\n— Ola Martins (olamartins.com)`,
+    });
+
     res.status(201).json({ request: rows[0], message: 'Thank you! Your consultation request has been received.' });
   } catch (err) {
     next(err);

@@ -71,7 +71,8 @@ CREATE TABLE IF NOT EXISTS consultation_requests (
     last_name  VARCHAR(120),
     email      VARCHAR(255) NOT NULL,
     code       VARCHAR(10),               -- country calling code
-    zip_code   VARCHAR(30),
+    zip_code   VARCHAR(30),               -- national number (legacy field, kept for old rows)
+    phone      VARCHAR(30),               -- full international number, e.g. +2348012345678
     message    TEXT         NOT NULL,
     status     VARCHAR(20)  NOT NULL DEFAULT 'new' CHECK (status IN ('new', 'read', 'responded')),
     created_at TIMESTAMPTZ  NOT NULL DEFAULT NOW()
@@ -83,6 +84,10 @@ CREATE INDEX IF NOT EXISTS idx_resources_type       ON resources (type);
 CREATE INDEX IF NOT EXISTS idx_products_published   ON products (published, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_products_category    ON products (category);
 CREATE INDEX IF NOT EXISTS idx_consultations_status ON consultation_requests (status, created_at DESC);
+
+-- Idempotent migrations for databases created before these columns existed
+-- (CREATE TABLE IF NOT EXISTS does not alter existing tables).
+ALTER TABLE consultation_requests ADD COLUMN IF NOT EXISTS phone VARCHAR(30);
 
 -- Keep updated_at current on every update
 CREATE OR REPLACE FUNCTION set_updated_at() RETURNS TRIGGER AS $$

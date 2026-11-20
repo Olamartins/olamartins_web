@@ -4,6 +4,7 @@ import { ThemeProvider } from './context/ThemeContext.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
 import Navbar from './components/Navbar.jsx';
 import Footer from './components/Footer.jsx';
+import Chatbot from './components/Chatbot.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import Home from './pages/Home.jsx';
 import About from './pages/About.jsx';
@@ -71,6 +72,7 @@ function Shell() {
         </Routes>
       </main>
       {!isAdminArea && <Footer />}
+      {!isAdminArea && <Chatbot />}
     </div>
   );
 }

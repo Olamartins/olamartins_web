@@ -61,8 +61,8 @@ export default function AdminProducts() {
       )}
 
       {items && items.length > 0 && (
-        <div className="card mt-8 overflow-hidden">
-          <table className="w-full text-left text-sm">
+        <div className="card mt-8 overflow-x-auto">
+          <table className="w-full min-w-[620px] text-left text-sm">
             <thead className="border-b border-neutral-200 bg-neutral-50 text-xs uppercase tracking-wide text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900/60 dark:text-neutral-400">
               <tr>
                 <th className="px-5 py-3.5 font-semibold">Product</th>

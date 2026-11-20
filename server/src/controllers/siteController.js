@@ -4,6 +4,7 @@ import { query } from '../config/db.js';
 const DEFAULT_SETTINGS = {
   siteName: 'Ola Martins',
   tagline: 'Business Intelligence Consultant',
+  branding: { logoUrl: '/martins-analytics-logo.png', profileImage: '/olamartins-profile.jpg' },
   hero: {
     eyebrow: "I'm Martins — Business Intelligence Consultant",
     title: 'Clarity from Complexity.',
@@ -13,10 +14,14 @@ const DEFAULT_SETTINGS = {
   },
   stats: [],
   services: [],
+  highlights: [],
+  experience: [],
+  certifications: [],
+  tools: [],
   about: { heading: '', subheading: '', body: [] },
   mission: '',
   vision: '',
-  contact: { phone: '', email: '', address: '' },
+  contact: { phone: '', email: '', address: '', whatsapp: '+23412345678' },
   socials: { linkedin: '', twitter: '', medium: '' },
 };
 

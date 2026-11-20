@@ -65,6 +65,30 @@ RewriteRule ^(.*)$ http://127.0.0.1:5000/$1 [P,L]
 
 (adjust the port to the one cPanel assigned; keep `/api` and static assets going to the Node app).
 
+## 3b. Email notifications (free)
+
+The "Get a Free Consultation" form stores every request in the database (visible at
+`/admin/messages`) **and** emails a full notification to your inbox — no paid API.
+
+- On cPanel, `/usr/sbin/sendmail` exists by default, so the Node server sends mail
+  through it automatically. Just set these env vars in "Setup Node.js App":
+
+  | Key | Value |
+  | --- | ----- |
+  | `MAIL_FROM` | `no-reply@olamartins.com` (use an address on your domain) |
+  | `NOTIFY_EMAIL` | the inbox that receives new requests (e.g. your Gmail) |
+  | `SENDMAIL_PATH` | `/usr/sbin/sendmail` (default) |
+
+- To make delivery reliable (avoid spam folders): create the `no-reply@olamartins.com`
+  mailbox or a forwarder in cPanel → **Email Accounts / Forwarders**, and enable
+  **SPF + DKIM** via cPanel → **Email Deliverability** (fix any records it flags).
+- If sendmail is unavailable, the form still works — the request is saved and shown
+  in the admin; the server logs a warning. Free alternatives if you ever want them:
+  Brevo (300 emails/day free) or SMTP2GO via SMTP, wired in `server/src/utils/mailer.js`.
+
+Uploaded images from the admin CMS are stored in `server/uploads/` (served at
+`/uploads/...`) — make sure that folder is writable (`chmod 755`).
+
 ## 4. SSL
 
 cPanel → **SSL/TLS Status** → **Run AutoSSL** so `https://olamartins.com` is issued. `COOKIE_SECURE=true` requires HTTPS.

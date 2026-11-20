@@ -18,8 +18,11 @@ export function createApp() {
 
   app.use(helmet({ contentSecurityPolicy: false }));
   app.use(cors({ origin: config.clientUrl, credentials: true }));
-  app.use(express.json({ limit: '1mb' }));
+  app.use(express.json({ limit: '10mb' })); // room for base64 image uploads
   app.use(cookieParser());
+
+  // Uploaded images (admin CMS) are served from here in every environment
+  app.use('/uploads', express.static(path.resolve(here, '../../server/uploads')));
 
   app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
   app.use('/api/auth', authRoutes);
