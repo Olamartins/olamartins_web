@@ -85,6 +85,10 @@ CREATE INDEX IF NOT EXISTS idx_products_published   ON products (published, crea
 CREATE INDEX IF NOT EXISTS idx_products_category    ON products (category);
 CREATE INDEX IF NOT EXISTS idx_consultations_status ON consultation_requests (status, created_at DESC);
 
+-- Idempotent migrations for databases created before these columns existed
+-- (CREATE TABLE IF NOT EXISTS does not alter existing tables).
+ALTER TABLE consultation_requests ADD COLUMN IF NOT EXISTS phone VARCHAR(30);
+
 -- Keep updated_at current on every update
 CREATE OR REPLACE FUNCTION set_updated_at() RETURNS TRIGGER AS $$
 BEGIN
