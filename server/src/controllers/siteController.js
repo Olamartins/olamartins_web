@@ -21,7 +21,7 @@ const DEFAULT_SETTINGS = {
   about: { heading: '', subheading: '', body: [] },
   mission: '',
   vision: '',
-  contact: { phone: '', email: '', address: '' },
+  contact: { phone: '', email: '', address: '', whatsapp: '+23412345678' },
   socials: { linkedin: '', twitter: '', medium: '' },
 };
 

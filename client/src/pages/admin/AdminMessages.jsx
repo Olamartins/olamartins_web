@@ -59,7 +59,10 @@ export default function AdminMessages() {
                     <span className="ml-2 font-normal text-neutral-400">{formatDate(m.created_at)}</span>
                   </p>
                   <p className="mt-0.5 text-sm text-neutral-500 dark:text-neutral-400">
-                    {m.email} {m.code && m.zip_code ? `· ${m.code} ${m.zip_code}` : ''}
+                    {m.email}
+                    {m.phone ? (
+                      <> · <a className="font-medium text-blue-700 hover:underline dark:text-blue-300" href={`tel:${m.phone}`}>{m.phone}</a></>
+                    ) : m.code && m.zip_code ? ` · ${m.code} ${m.zip_code}` : ''}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">

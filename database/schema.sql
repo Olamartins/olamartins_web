@@ -71,7 +71,8 @@ CREATE TABLE IF NOT EXISTS consultation_requests (
     last_name  VARCHAR(120),
     email      VARCHAR(255) NOT NULL,
     code       VARCHAR(10),               -- country calling code
-    zip_code   VARCHAR(30),
+    zip_code   VARCHAR(30),               -- national number (legacy field, kept for old rows)
+    phone      VARCHAR(30),               -- full international number, e.g. +2348012345678
     message    TEXT         NOT NULL,
     status     VARCHAR(20)  NOT NULL DEFAULT 'new' CHECK (status IN ('new', 'read', 'responded')),
     created_at TIMESTAMPTZ  NOT NULL DEFAULT NOW()

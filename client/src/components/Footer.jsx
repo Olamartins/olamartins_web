@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { BookOpen, Github, Linkedin, Twitter } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { api } from '../api/client.js';
+import { whatsappLink } from '../utils/countries.js';
 
 const DEFAULT_LOGO = '/martins-analytics-logo.png';
 
@@ -69,6 +70,13 @@ export default function Footer() {
           <ul className="mt-3 space-y-2 text-sm">
             {contact.email && <li>{contact.email}</li>}
             {contact.phone && <li>{contact.phone}</li>}
+            {whatsappLink(contact.whatsapp) && (
+              <li>
+                <a className="font-medium text-green-400 hover:underline" href={whatsappLink(contact.whatsapp)} target="_blank" rel="noreferrer">
+                  WhatsApp {contact.whatsapp}
+                </a>
+              </li>
+            )}
             {contact.address && <li>{contact.address}</li>}
           </ul>
         </div>

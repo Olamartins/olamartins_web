@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Award, Briefcase, Github, Linkedin, Mail, MapPin, Phone, Target, Eye } from 'lucide-react';
 import { api } from '../api/client.js';
+import { whatsappLink } from '../utils/countries.js';
 import PageHero from '../components/PageHero.jsx';
 import Reveal from '../components/Reveal.jsx';
 import Spinner from '../components/Spinner.jsx';
@@ -56,6 +57,11 @@ export default function About() {
                   )}
                   {settings.contact?.phone && (
                     <a className="badge hover:border-blue-300" href={`tel:${settings.contact.phone}`}><Phone size={13} /> {settings.contact.phone}</a>
+                  )}
+                  {whatsappLink(settings.contact?.whatsapp) && (
+                    <a className="badge hover:border-green-400 hover:bg-green-50 dark:hover:bg-green-500/10" href={whatsappLink(settings.contact.whatsapp)} target="_blank" rel="noreferrer">
+                      WhatsApp {settings.contact.whatsapp}
+                    </a>
                   )}
                   {settings.socials?.linkedin && (
                     <a className="badge hover:border-blue-300" href={settings.socials.linkedin} target="_blank" rel="noreferrer"><Linkedin size={13} /> LinkedIn</a>

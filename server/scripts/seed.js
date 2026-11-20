@@ -147,6 +147,7 @@ const settings = {
     phone: '+2347031373640',
     email: 'olawumifadero.m@gmail.com',
     address: 'Port Harcourt, Nigeria',
+    whatsapp: '+23412345678',
   },
   socials: {
     linkedin: 'https://www.linkedin.com/in/olamartins07',

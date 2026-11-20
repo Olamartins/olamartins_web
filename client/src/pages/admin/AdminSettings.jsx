@@ -38,6 +38,7 @@ export default function AdminSettings() {
         contactPhone: s.contact?.phone || '',
         contactEmail: s.contact?.email || '',
         contactAddress: s.contact?.address || '',
+        contactWhatsapp: s.contact?.whatsapp || '',
         linkedin: s.socials?.linkedin || '',
         twitter: s.socials?.twitter || '',
         medium: s.socials?.medium || '',
@@ -91,7 +92,7 @@ export default function AdminSettings() {
       },
       mission: form.mission,
       vision: form.vision,
-      contact: { phone: form.contactPhone, email: form.contactEmail, address: form.contactAddress },
+      contact: { phone: form.contactPhone, email: form.contactEmail, address: form.contactAddress, whatsapp: form.contactWhatsapp },
       socials: { linkedin: form.linkedin, twitter: form.twitter, medium: form.medium },
     };
     try {
@@ -217,6 +218,10 @@ export default function AdminSettings() {
             <div>
               <label className="label">Address</label>
               <input className="input" value={form.contactAddress} onChange={set('contactAddress')} />
+            </div>
+            <div>
+              <label className="label">WhatsApp number (with country code, e.g. +23412345678)</label>
+              <input className="input" value={form.contactWhatsapp} onChange={set('contactWhatsapp')} placeholder="+23412345678" />
             </div>
             <div>
               <label className="label">LinkedIn URL</label>

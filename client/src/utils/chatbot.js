@@ -83,11 +83,19 @@ const RULES = [
     quick: ['Free resources', 'Show me the shop'],
   },
   {
-    id: 'contact',
-    keywords: ['contact', 'email', 'phone', 'whatsapp', 'call', 'book', 'consultation', 'meet', 'reach', 'talk', 'hire', 'start a project', 'schedule'],
+    id: 'whatsapp',
+    keywords: ['whatsapp', 'whats app', 'wa.me', 'green button', 'chat directly'],
     reply:
-      "You can reach Ola at olawumifadero.m@gmail.com or +2347031373640 (Port Harcourt, Nigeria). Fastest way to start: the free consultation form on the Contact page — he replies within one business day.",
-    links: [{ label: 'Open the contact form', to: '/contact' }],
+      "You can chat with Ola directly on WhatsApp — tap the green WhatsApp button below this chat window, or use the link here.",
+    links: [{ label: 'Chat on WhatsApp', href: 'https://wa.me/23412345678' }],
+    quick: ['Book a call instead', 'What do you do?'],
+  },
+  {
+    id: 'contact',
+    keywords: ['contact', 'email', 'phone', 'call', 'book', 'consultation', 'meet', 'reach', 'talk', 'hire', 'start a project', 'schedule'],
+    reply:
+      "You can reach Ola at olawumifadero.m@gmail.com or +2347031373640 (Port Harcourt, Nigeria) — or WhatsApp via the green button. Fastest way to start: the free consultation form on the Contact page; he replies within one business day.",
+    links: [{ label: 'Open the contact form', to: '/contact' }, { label: 'Chat on WhatsApp', href: 'https://wa.me/23412345678' }],
     quick: ['What do you do?', 'Show me the shop'],
   },
   {
